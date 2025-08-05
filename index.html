@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #ecf0f1;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        #weather {
+            margin-top: 30px;
+        }
+
+        img {
+            width: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🌤 Live Weather Info</h1>
+    <input id="city" type="text" placeholder="Enter city name" />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather"></div>
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('city').value.trim();
+            const apiKey = "11ab111166bd361d648816b42d3af450";
+            if (!city) return alert("Please enter a city name.");
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.cod !== 200) throw new Error(data.message);
+                document.getElementById('weather').innerHTML = `
+          <h2>${data.name}, ${data.sys.country}</h2>
+          <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="">
+          <p><strong>${data.main.temp}°C</strong> – ${data.weather[0].description}</p>
+        `;
+            } catch (err) {
+                document.getElementById('weather').innerHTML =` <p style="color:yellow">❗ ${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
